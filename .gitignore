@@ -1,0 +1,13 @@
+﻿# LexiClip repository ignore list
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+extension/.git.bak/
+.env
+.env.*
