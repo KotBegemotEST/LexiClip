@@ -1,0 +1,20 @@
+[
+    {
+        "severity": "HIGH",
+        "title": "Old problem to be fixed",
+        "description": "This problem was here before.",
+        "remediation": "Fix the legacy misconfiguration.",
+        "cwe": "CWE-16",
+        "evidence": "",
+        "hash": 52090963
+    },
+    {
+        "severity": "MEDIUM",
+        "title": "Cookie without HttpOnly (legacy)",
+        "description": "Session cookie is accessible via JS.",
+        "remediation": "Add HttpOnly to session cookie.",
+        "cwe": "CWE-311",
+        "evidence": "",
+        "hash": 35534624
+    }
+]
