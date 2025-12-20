@@ -2,6 +2,8 @@ import { Router, Request, Response } from "express";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "../config/prisma";
+import jwt from "jsonwebtoken";
+import { env } from "../config/env";
 
 export const authRouter = Router();
 
@@ -12,7 +14,12 @@ authRouter.get("/ping", (_req, res) => {
 // Схема для тела запроса регистрации
 const registerSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6)
+  password: z.string().min(12)
+});
+
+const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(12)
 });
 
 // POST /auth/register
@@ -61,7 +68,32 @@ authRouter.post("/register", async (req: Request, res: Response) => {
   }
 });
 
-// Временный ping, можно оставить
-authRouter.get("/ping", (_req: Request, res: Response) => {
-  res.json({ ok: true });
+
+authRouter.post("/login", async (req: Request, res: Response) => {
+  try {
+    const parsed = loginSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({
+        error: "Invalid data",
+        details: parsed.error.flatten()
+      });
+    }
+    const { email, password } = parsed.data;
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+    const valid = await bcrypt.compare(password, user.passwordHash);
+    if (!valid) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+    const token = jwt.sign({ sub: user.id, email: user.email }, env.JWT_SECRET, { expiresIn: "1h" });
+    return res.status(200).json({
+      token,
+      user: { id: user.id, email: user.email }
+    });
+  } catch (err) {
+    console.error("[auth/login] error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
 });

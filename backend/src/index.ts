@@ -12,7 +12,7 @@ app.use(express.json());
 // Routes
 app.use("/auth", authRouter);
 
-// Ñ¨¥?Ñó¥?¥'ÑóÑû healthcheck
+// Healthcheck
 app.get("/health", (_req, res) => {
   res.json({
     status: "ok",
@@ -20,7 +20,7 @@ app.get("/health", (_req, res) => {
   });
 });
 
-// TODO: ¥?¥ZÑïÑø Ñ¨Ñó¥'ÑóÑ¬ Ñ¨ÑóÑïÑ§Ñ¯¥Z¥ÎÑ÷Ñ¬ ¥?Ñó¥Ÿ¥'¥< /auth Ñ÷ /words
+// TODO: add words routes
 // app.use("/words", wordsRouter);
 
 const port = env.PORT;
